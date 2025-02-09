@@ -1,0 +1,474 @@
+---
+description: Instructions for developing the application
+globs: 
+---
+# Instructions
+
+We will structure the development in an integrated manner, starting with the initial setup and progressing to the main functionalities. Here is a detailed plan:
+
+## 1. Initial Project Configuration
+
+- **1.1 File Structure:**
+
+```
+TWITTERCLONE/                     # Project Root
+│
+├── apps/                         # (New) Folder to group all Django apps
+│   │
+│   ├── core/                     # App for global features
+│   │   ├── migrations/
+│   │   ├── models.py             # Global Templates (e.g. System Settings)
+│   │   ├── views.py              # Global Views (e.g. Home Page)
+│   │   ├── urls.py               # Core-specific URLs
+│   │   └── templates/core/       # Core-specific templates
+│   │       └── home.html         # Template example
+│   │
+│   ├── users/                    # App for authentication and profiles
+│   │   ├── migrations/
+│   │   ├── models.py             # Custom User Model
+│   │   ├── views.py              # Authentication Views
+│   │   ├── urls.py               # Auth URLs (login, signup, etc)
+│   │   ├── forms.py              # Registration/Login forms
+│   │   └── templates/users/      # User-specific templates
+│   │       ├── login.html
+│   │       └── signup.html
+│   │
+│   └── tweets/                   # App for posts
+│       ├── migrations/
+│       ├── models.py             # Tweet Template
+│       ├── views.py              # Feed views/tweet creation
+│       ├── urls.py               # Tweet-related URLs
+│       ├── serializers.py        # Serializers for DRF
+│       └── templates/tweets/     # Specific tweet templates
+│           ├── feed.html
+│           └── partials/         # Tweet HTML Components
+│               └── tweet.html
+│
+├── templates/                    # Global templates (project level)
+│   ├── base.html                 # Main base template
+│   ├── includes/                 # Reusable components
+│   │   ├── sidebar.html          # Left sidebar
+│   │   ├── navbar.html           # Top navigation bar
+│   │   └── right_sidebar.html    # Right bar (trending topics)
+│   └── partials/                 # Global HTMLX Components
+│       ├── search_results.html   # Search results
+│       └── notifications.html    # Dynamic notifications
+│
+├── twitterclone/                 # Django project settings
+│   ├── settings.py               # Config template dirs here!
+│   ├── urls.py                   # Global URLs
+│   └── ...
+│
+├── static/                       # Global static files
+│   ├── css/                      # Custom styles
+│   ├── js/                       # Custom scripts
+│   └── images/                   # Global images
+│                   
+├──staticfiles/                   # Auto-generated (NOT versioned!)
+│
+├── media/                        # User uploads (automatically created)
+│   └── profiles/                 # Profile pictures
+│
+├── docker-compose.yml
+├── Dockerfile
+├── requirements.txt
+└── ...
+```
+
+- **1. Physical Separation of Apps:**
+
+  - New apps/ folder to group all application components
+
+  - Easier navigation and scalability
+
+- **2. Template Organization:**
+
+  - Global templates in templates/ (project level)
+
+  - Specific templates within each app (templates/<app_name>/)
+
+  - Automatic namespacing (e.g. users/login.html)
+
+- **3. HTMX Structure:**
+
+  - Partials/ folder on two levels:
+
+    - Global: for components used in multiple apps
+
+    - Per app: for specific components
+
+### Recommended Configuration in settings.py:
+
+- **1.2 Configuring settings.py:**
+
+```
+# settings.py
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    # Third-party apps
+    'rest_framework',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'django_htmx',
+    
+    # Local apps (organized in the apps/ folder)
+    'apps.users',
+    'apps.core',
+    'apps.tweets',
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    # HTMX Middleware
+    'django_htmx.middleware.HtmxMiddleware',
+]
+
+# Custom User Model Configuration
+AUTH_USER_MODEL = 'apps_users.CustomUser'  # Note o namespace apps_users
+
+# Django Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# Django REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # Segurança adicional
+    )
+}
+
+# Additional Required Settings (add these sections)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],  # Templates globais
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # ... context processors padrão ...
+            ],
+        },
+    },
+]
+
+# Static/Media Files Configuration
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Para desenvolvimento
+STATIC_ROOT = BASE_DIR / 'staticfiles'    # Para produção
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # Uploads de usuários
+```
+
+- **1.3 Organized App Structure:**
+
+```
+'apps.users',  # New namespaced format
+'apps.core',
+'apps.tweets',
+```
+
+Reflects the physical organization in the apps/ folder
+
+- **1.4 Custom User Configuration:**
+
+```
+AUTH_USER_MODEL = 'apps_users.CustomUser'  # Caminho completo
+```
+
+Assume your model is in apps/users/models.py
+
+- **1.5 Additional Security in DRF:**
+
+```
+'DEFAULT_PERMISSION_CLASSES': (
+    'rest_framework.permissions.IsAuthenticated',
+)
+```
+
+By default, requires authentication for all APIs
+
+- **1.6 Middleware HTMX:**
+
+```
+'django_htmx.middleware.HtmxMiddleware'  # Added to list
+```
+
+- **1.7 Explicit Template Configuration**
+
+```
+'DIRS': [BASE_DIR / 'templates']  # Ensures that global templates are found
+```
+
+### To Implement Successfully:
+
+- **1. Check the physical structure of the files:**
+
+```
+TWITTERCLONE/
+└── apps/
+    ├── users/
+    │   ├── models.py  # Must contain CustomUser
+    │   └── ...
+```
+
+- **2. Run after changes:**
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+- **3. For frontend development:**
+
+```
+<!-- In templates, use: -->
+{% load crispy_forms_tags %}
+{% load static %}
+```
+
+## 2. User Authentication
+
+- **2.1 Custom Model (users/models.py):**
+
+```
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class CustomUser(AbstractUser):
+    profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True)
+```
+
+- **2.2 Forms (users/forms.py):**
+
+```
+from django import forms
+from .models import CustomUser
+from django.contrib.auth.forms import UserCreationForm
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email', 'password1', 'password2', 'profile_picture')
+```
+
+- **2.3 Login Template (templates/users/login.html):**
+
+```
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">Login</h2>
+          <form hx-post="{% url 'login' %}" hx-target="#auth-container">
+            {% crispy form %}
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+          </form>
+          <div class="text-center mt-3">
+            <a href="{% url 'signup' %}" class="text-decoration-none">Criar nova conta</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+```
+
+## 3. Main Layout (base.html)
+
+- **3.1 Base Structure with Alpine.js for UI State:**
+
+```
+<!DOCTYPE html>
+<html lang="pt-br" x-data="{ openMenu: false }">
+<head>
+    <!-- Bootstrap CDN + Alpine.js + HTMX -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Esquerda -->
+            <nav class="col-md-2 d-none d-md-block bg-white sidebar">
+                {% include 'includes/sidebar.html' %}
+            </nav>
+
+            <!-- Conteúdo Principal -->
+            <main class="col-md-6 ms-sm-auto px-md-4">
+                {% block content %}{% endblock %}
+            </main>
+
+            <!-- Sidebar Direita -->
+            <aside class="col-md-4">
+                {% include 'includes/right_sidebar.html' %}
+            </aside>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+## 4. Main Feed with HTMX
+
+- **4.1 Feed Template (templates/tweets/feed.html):**
+
+```
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="mt-3">
+  <!-- Formulário de Tweet -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <form hx-post="{% url 'create_tweet' %}" hx-swap="afterbegin" hx-target="#tweets">
+        {% crispy form %}
+        <button type="submit" class="btn btn-primary mt-2">Tweet</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de Tweets -->
+  <div id="tweets">
+    {% for tweet in tweets %}
+      {% include "tweets/partials/tweet.html" %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+```
+
+- **4.2 View with DRF and HTMX (tweets/views.py):**
+
+```
+from rest_framework import generics
+from django_htmx.http import trigger_client_event
+from .models import Tweet
+from .serializers import TweetSerializer
+
+class TweetCreateAPIView(generics.CreateAPIView):
+    serializer_class = TweetSerializer
+    
+    def get_success_headers(self, data):
+        response = super().get_success_headers(data)
+        if self.request.htmx:
+            response = trigger_client_event(response, 'newTweet')
+        return response
+```
+
+## 5. HTMX Integration for Partial Updates
+
+- **5.1 Middleware Configuration (settings.py):**
+
+```
+MIDDLEWARE = [
+    ...
+    'django_htmx.middleware.HtmxMiddleware',
+]
+```
+
+- **5.2 Example of HTMX Component (templates/tweets/partials/tweet.html):**
+
+```
+<div class="card mb-3" x-data="{ liked: false }">
+  <div class="card-body">
+    <div class="d-flex">
+      <img src="{{ tweet.user.profile_picture.url }}" class="rounded-circle me-3" width="50" height="50">
+      <div>
+        <h5 class="card-title">{{ tweet.user.username }}</h5>
+        <p class="card-text">{{ tweet.content }}</p>
+        <button @click="liked = !liked" class="btn btn-sm btn-outline-danger">
+          <span x-text="liked ? '❤️' : '🤍'"></span> {{ tweet.likes.count }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+## 6. Immediate Steps for Implementation
+
+- **1. Initial Setup:**
+
+```
+poetry install
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+- **2. Create Custom User Model:**
+
+```
+# users/models.py (complete)
+# Don't forget to set MEDIA_URL and MEDIA_ROOT in settings.py
+```
+
+- **3. Social Authentication (Google):**
+
+```
+# Use django-allauth
+pip install django-allauth
+# Configure in settings.py and create templates
+```
+
+- **4. Test Docker:**
+
+```
+docker-compose up --build
+# Check connection to PostgreSQL
+```
+
+- **5. Iterative Development:**
+
+Start with authentication (login/signup)
+
+Implement tweet form with HTML
+
+Create API endpoints for asynchronous operations
+
+Add search with HTML (SearchView)
+
+## 7. Architecture Considerations
+
+- **1. Layer Separation:**
+
+Templates: Small, reusable components
+
+Views: Minimal logic, delegate to services
+
+Serializers: Complex validation and transformations
+
+- **2. Performance:**
+
+Use select_related for tweet queries
+
+Template caching for sidebars
+
+HTMX pagination
