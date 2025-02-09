@@ -14,7 +14,7 @@ This document provides a step-by-step guide for setting up the **twitterclone** 
 - **HTMX** and **Alpine.js** (via CDN and optionally using django-htmx)
 - **Docker** (with Dockerfile and docker-compose for local testing)
 - **PostgreSQL** (via psycopg2-binary, as defined in the dependencies)
-- Deployment via Railway (using Gunicorn and Whitenoise)
+- **Deployment** via Railway (using Gunicorn and Whitenoise)
 
 ---
 
