@@ -20,6 +20,11 @@ whitenoise = "^6.8.2"
 gunicorn = "^23.0.0"
 django-crispy-forms = "^2.3"
 django-htmx = "^1.22.0"
+crispy-bootstrap5 = "^2024.10"
+pillow = "^11.1.0"
+django-allauth = "^65.4.1"
+pyjwt = "^2.10.1"
+cryptography = "^44.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"

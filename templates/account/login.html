@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card">
+    <h2 class="auth-title">{% trans "Entrar" %}</h2>
+    <form method="post" action="{% url 'account_login' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary btn-block">{% trans "Entrar" %}</button>
+    </form>
+    <p class="text-center mt-3">
+      {% trans "Não possui uma conta?" %} <a href="{% url 'account_signup' %}">{% trans "Cadastre-se" %}</a>
+    </p>
+  </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card">
+    <h2 class="auth-title">{% trans "Logout" %}</h2>
+    <p class="text-center">
+      {% trans "Você saiu com sucesso." %}
+    </p>
+    <div class="text-center mt-3">
+      <a href="{% url 'login' %}" class="btn btn-primary">{% trans "Ok" %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %} 

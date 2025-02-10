@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="mt-3">
+  <!-- Formulário de Tweet -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <form hx-post="{% url 'tweets:create_tweet' %}" hx-swap="afterbegin" hx-target="#tweets">
+        {% crispy form %}
+        <button type="submit" class="btn btn-primary mt-2">Tweet</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de Tweets -->
+  <div id="tweets">
+    {% for tweet in tweets %}
+      {% include "tweets/partials/tweet.html" %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %} 

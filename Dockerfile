@@ -28,21 +28,24 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         curl \
         build-essential \
-        # Dependências para PostgreSQL
         libpq-dev \
         gcc \
-    && pip install psycopg2
+        python3-dev \
+        netcat-traditional \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install psycopg2-binary gunicorn requests
 
-# Instalação moderna do Poetry (método oficial atualizado)
+# Instalação do Poetry
 RUN curl -sSL https://install.python-poetry.org | python - --version ${POETRY_VERSION}
 
 # Copiar e instalar dependências do projeto
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
-# Instalação de dependências com Poetry
-RUN poetry install --only=main --no-root  # Para produção use --only=main
-# RUN poetry install  # Para desenvolvimento (inclui dev dependencies)
+# Configurar Poetry para não criar ambiente virtual e não instalar o projeto raiz
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-root
 
 # Configuração final do workspace
 WORKDIR /app
@@ -54,4 +57,4 @@ RUN chmod +x /app/entrypoint.sh
 
 # Define o entrypoint e o comando padrão
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["gunicorn", "twitterclone.wsgi:application", "--bind", "0.0.0.0:8000", "--access-logfile", "/dev/null", "--log-level", "warning"]
+CMD ["gunicorn", "twitterclone.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4", "--access-logfile", "-", "--error-logfile", "-"]

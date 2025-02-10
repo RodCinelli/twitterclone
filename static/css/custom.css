@@ -1,0 +1,117 @@
+/* custom.css - Estilizações inspiradas no antigo Twitter */
+
+:root {
+    --twitter-blue: #1DA1F2;
+    --twitter-blue-dark: #1A91DA; /* versão levemente escura para hover */
+    --twitter-dark: #14171A;
+    --twitter-light: #AAB8C2;
+    --twitter-bg: #E6ECF0;
+    --twitter-border: #CCD6DD;
+}
+
+/* Corpo da página */
+body {
+    background-color: var(--twitter-bg);
+    color: var(--twitter-dark);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Cabeçalho, Navbar e Sidebars */
+.navbar, .sidebar {
+    background-color: var(--twitter-blue);
+    color: #fff;
+}
+
+/* Links */
+a {
+    color: var(--twitter-blue);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--twitter-dark);
+    text-decoration: underline;
+}
+
+/* Cards */
+.card {
+    border: 1px solid var(--twitter-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #fff;
+}
+
+/* Botões primários */
+.btn-primary {
+    background-color: var(--twitter-blue);
+    border-color: var(--twitter-blue);
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--twitter-blue-dark);
+    border-color: var(--twitter-blue-dark);
+}
+
+/* Formulários */
+.form-control {
+    border: 1px solid var(--twitter-border);
+    border-radius: 4px;
+}
+
+/* Layout principal */
+main {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Ajuste da Sidebar */
+.sidebar {
+    background-color: #fff;
+    border-right: 1px solid var(--twitter-border);
+    padding: 20px;
+}
+
+/* Estilização dos Tweets */
+.tweet {
+    padding: 15px;
+    border-bottom: 1px solid var(--twitter-border);
+}
+.tweet:last-child {
+    border-bottom: none;
+}
+
+/* Botão de like */
+.btn-outline-danger {
+    border-color: var(--twitter-border);
+    color: var(--twitter-light);
+}
+.btn-outline-danger:hover {
+    color: var(--twitter-blue);
+    border-color: var(--twitter-blue);
+}
+
+/* Estilizações para páginas de autenticação */
+.auth-container {
+  background: linear-gradient(135deg, var(--twitter-blue), var(--twitter-blue-dark));
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.auth-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--twitter-blue);
+  text-align: center;
+  margin-bottom: 1.5rem;
+} 
