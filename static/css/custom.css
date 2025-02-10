@@ -92,26 +92,126 @@ main {
 
 /* Estilizações para páginas de autenticação */
 .auth-container {
-  background: linear-gradient(135deg, var(--twitter-blue), var(--twitter-blue-dark));
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.auth-content {
+  background: #fff;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+}
+
+.auth-info {
+  background: var(--twitter-blue);
+  color: #fff;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-info-content h2.auth-welcome {
+  font-size: 2rem;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.twitter-icon-lg {
+  width: 80px;
+  height: 80px;
+  fill: #fff;
+  animation: spin 4s linear infinite;
+  display: block;
+  margin: 0 auto;
+}
+
+.auth-form-container {
+  padding: 2rem;
+  flex: 1;
 }
 
 .auth-card {
-  width: 100%;
-  max-width: 400px;
+  background: #fff;
   padding: 2rem;
-  border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.auth-title {
-  font-size: 2rem;
+.auth-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+}
+
+.auth-icon-small svg {
+  fill: var(--twitter-blue);
+}
+
+.auth-card h2.auth-title {
+  margin-bottom: 1rem;
   font-weight: bold;
-  color: var(--twitter-blue);
-  text-align: center;
-  margin-bottom: 1.5rem;
-} 
+}
+
+.auth-card form input[type="text"],
+.auth-card form input[type="password"],
+.auth-card form input[type="email"] {
+  border: 1px solid var(--twitter-border);
+  border-radius: 4px;
+  padding: 0.75rem;
+  width: 100%;
+  transition: border 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.auth-card form input[type="text"]:focus,
+.auth-card form input[type="password"]:focus,
+.auth-card form input[type="email"]:focus {
+  border-color: var(--twitter-blue);
+  outline: none;
+}
+
+.auth-card form label {
+  font-weight: 500;
+  transition: color 0.3s ease;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.auth-card form label:hover {
+  color: var(--twitter-blue-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .auth-content {
+    flex-direction: column;
+  }
+  .auth-info {
+    display: none;
+  }
+  .auth-form-container {
+    width: 100%;
+  }
+}
+
+/* Animations */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Login page enhancements end */ 

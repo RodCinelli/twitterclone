@@ -21,8 +21,10 @@ from django.views.generic.base import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from allauth.account.views import LoginView
+from apps.users.views import CustomPasswordResetView
 
 urlpatterns = [
+    path('accounts/password/reset/', CustomPasswordResetView.as_view(), name='password_reset'),
     path('admin/', admin.site.urls),
     path('login/', LoginView.as_view(), name='login'),
     path('accounts/', include('allauth.urls')),
