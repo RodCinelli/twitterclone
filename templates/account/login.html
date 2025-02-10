@@ -3,6 +3,18 @@
 {% load static %}
 
 {% block content %}
+<style>
+body {
+  background: linear-gradient(45deg, #1DA1F2, #ffffff);
+  min-height: 100vh;
+  margin: 0;
+}
+input:hover {
+  border-color: #1DA1F2;
+  box-shadow: 0 0 5px rgba(29, 161, 242, 0.6);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+</style>
 <div class="auth-container">
   <div class="row auth-content">
     <div class="col-md-6 auth-info d-none d-md-flex align-items-center justify-content-center">
