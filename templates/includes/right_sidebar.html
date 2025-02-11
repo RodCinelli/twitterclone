@@ -101,7 +101,7 @@
 
 <div class="right-sidebar-content">
     <!-- Search Bar -->
-    <form class="search-form" action="{% url 'core:search' %}" method="GET">
+    <form class="search-form" method="GET">
         <div class="input-group">
             <span class="input-group-text bg-transparent border-end-0">
                 <svg viewBox="0 0 24 24" class="search-icon">
@@ -110,10 +110,19 @@
                         </path>
                     </g>
                 </svg>
+                <div class="htmx-indicator spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">Buscando...</span>
+                </div>
             </span>
-            <input type="search" class="form-control border-start-0" placeholder="Buscar no Twitter" name="q"
-                hx-get="{% url 'core:search' %}" hx-trigger="keyup changed delay:500ms" hx-target="#search-results"
-                hx-swap="innerHTML">
+            <input type="search" 
+                   class="form-control border-start-0" 
+                   placeholder="Buscar no Twitter" 
+                   name="q"
+                   hx-get="{% url 'tweets:search_tweets' %}" 
+                   hx-trigger="keyup changed delay:500ms, search"
+                   hx-target="#tweets"
+                   hx-swap="innerHTML"
+                   hx-indicator=".htmx-indicator">
         </div>
     </form>
     <div id="search-results" class="position-absolute bg-white w-100 shadow-sm rounded-bottom border-top-0"></div>
@@ -191,3 +200,50 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function initializeLikeButton(button) {
+        // Adiciona os comportamentos do botão de like manualmente
+        button.addEventListener('click', function() {
+            this.classList.toggle('liked');
+        });
+
+        button.addEventListener('htmx:afterRequest', function(event) {
+            if (event.detail.xhr.status === 200) {
+                const response = JSON.parse(event.detail.xhr.response);
+                if (response.liked) {
+                    this.classList.add('liked');
+                    this.dispatchEvent(new Event('heartBeat'));
+                    this.querySelector('i').classList.remove('bi-heart');
+                    this.querySelector('i').classList.add('bi-heart-fill');
+                } else {
+                    this.classList.remove('liked');
+                    this.querySelector('i').classList.add('bi-heart');
+                    this.querySelector('i').classList.remove('bi-heart-fill');
+                }
+                
+                // Atualiza o contador de likes
+                const likeCount = this.querySelector('.like-count');
+                if (likeCount) {
+                    likeCount.textContent = response.likeCount;
+                }
+            }
+        });
+
+        button.addEventListener('heartBeat', function() {
+            this.classList.add('beating');
+            setTimeout(() => {
+                this.classList.remove('beating');
+            }, 300);
+        });
+    }
+
+    // Inicializa os botões de like após cada busca
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'tweets') {
+            event.detail.target.querySelectorAll('.like-button').forEach(initializeLikeButton);
+        }
+    });
+});
+</script>

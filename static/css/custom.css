@@ -505,4 +505,16 @@ a:hover {
   to { opacity: 1; }
 }
 
-/* Login page enhancements end */ 
+/* Login page enhancements end */
+
+/* Indicador de carregamento da busca */
+.htmx-indicator {
+    display: none;
+    margin-left: 10px;
+}
+.htmx-request .htmx-indicator {
+    display: inline-block;
+}
+.htmx-request.htmx-indicator {
+    display: inline-block;
+} 
