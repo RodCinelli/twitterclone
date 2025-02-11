@@ -57,4 +57,4 @@ RUN chmod +x /app/entrypoint.sh
 
 # Define o entrypoint e o comando padrão
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["gunicorn", "twitterclone.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4", "--access-logfile", "-", "--error-logfile", "-"]
+CMD ["gunicorn", "twitterclone.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4", "--access-logfile", "-", "--error-logfile", "-", "--log-level", "info", "--capture-output"]

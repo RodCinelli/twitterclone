@@ -21,13 +21,16 @@ from django.views.generic.base import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from allauth.account.views import LoginView
-from apps.users.views import CustomPasswordResetView
+from apps.users.views import CustomPasswordResetView, custom_logout_view, CustomSignupView, UserListView
 
 urlpatterns = [
     path('accounts/password/reset/', CustomPasswordResetView.as_view(), name='password_reset'),
     path('admin/', admin.site.urls),
     path('login/', LoginView.as_view(), name='login'),
-    path('accounts/', include('allauth.urls')),
+    path("accounts/logout/", custom_logout_view, name="account_logout"),
+    path("accounts/signup/", CustomSignupView.as_view(), name='account_signup'),
+    path("accounts/", include("allauth.urls")),
     path('', include('apps.core.urls')),
     path('tweets/', include('apps.tweets.urls')),
+    path('accounts/users/', UserListView.as_view(), name='user_list'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

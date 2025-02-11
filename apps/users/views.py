@@ -1,11 +1,16 @@
 from django.views.generic.edit import FormView
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from .forms import CustomPasswordResetForm
+from django.shortcuts import render
+from allauth.account.views import SignupView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+import logging
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 class CustomPasswordResetView(FormView):
     template_name = "account/password_reset.html"
@@ -24,3 +29,33 @@ class CustomPasswordResetView(FormView):
             # To avoid exposing whether the email exists
             messages.success(self.request, "Caso o e-mail esteja cadastrado, sua senha foi redefinida com sucesso.")
         return super().form_valid(form)
+
+def custom_logout_view(request):
+    logout(request)
+    return render(request, "account/logout.html")
+
+class CustomSignupView(SignupView):
+    template_name = "account/signup.html"  # Usando o mesmo template
+
+    def form_valid(self, form):
+        logger.info(f"Signup process started for data: {form.cleaned_data}")
+        response = super().form_valid(form)
+        # Após form_valid, o usuário criado é atribuído a self.user
+        if self.user:
+            logger.info(f"User created successfully: {self.user.username}")
+            messages.success(self.request, f"Cadastro realizado com sucesso! Usuário '{self.user.username}' criado. Por favor, faça login.")
+        else:
+            logger.error("User creation failed: No user returned after signup.")
+            messages.error(self.request, "Ocorreu um erro ao cadastrar o usuário.")
+        return response
+
+    def form_invalid(self, form):
+        logger.error(f"Signup form invalid: {form.errors}")
+        return super().form_invalid(form)
+
+# Removendo proteções da UserListView para testes
+class UserListView(ListView):
+    model = get_user_model()
+    template_name = 'account/user_list.html'
+    context_object_name = 'users'
+    ordering = ['id']

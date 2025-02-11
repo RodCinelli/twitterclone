@@ -1,6 +1,8 @@
 from django import forms
 from .models import CustomUser
 from django.contrib.auth.forms import UserCreationForm
+from allauth.account.forms import SignupForm
+from django.contrib.auth import get_user_model
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -21,3 +23,13 @@ class CustomPasswordResetForm(forms.Form):
         if pw1 and pw2 and pw1 != pw2:
             raise forms.ValidationError("As senhas não coincidem.")
         return cleaned_data
+
+class CustomSignupForm(SignupForm):
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        User = get_user_model()
+        if email and User.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                "Este email já está em uso, por favor utilize outro email."
+            )
+        return email
