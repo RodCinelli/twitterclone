@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-results">
+    <div class="search-header p-3 border-bottom">
+        <h4>Resultados para "{{ query }}"</h4>
+    </div>
+
+    {% if not query %}
+        <div class="p-4 text-center text-muted">
+            <p>Digite algo para pesquisar tweets e usuários</p>
+        </div>
+    {% else %}
+        {% if not tweets and not users %}
+            <div class="p-4 text-center text-muted">
+                <p>Nenhum resultado encontrado para "{{ query }}"</p>
+            </div>
+        {% endif %}
+
+        {% if users %}
+            <div class="users-results mb-4">
+                <h5 class="p-3 border-bottom">Pessoas</h5>
+                {% for user in users %}
+                    <div class="user-item d-flex align-items-center p-3 border-bottom">
+                        <img src="{{ user.profile.avatar.url|default:'/static/images/default-avatar.png' }}" 
+                             alt="{{ user.username }}" 
+                             class="rounded-circle me-3" 
+                             width="48" height="48">
+                        <div class="user-info flex-grow-1">
+                            <h6 class="mb-0">{{ user.get_full_name|default:user.username }}</h6>
+                            <small class="text-muted">@{{ user.username }}</small>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm follow-btn">Follow</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if tweets %}
+            <div class="tweets-results">
+                <h5 class="p-3 border-bottom">Tweets</h5>
+                {% for tweet in tweets %}
+                    {% include "tweets/partials/tweet.html" with tweet=tweet %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %} 

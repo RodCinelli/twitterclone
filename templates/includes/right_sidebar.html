@@ -1,0 +1,175 @@
+{% load static %}
+
+<style>
+    .right-sidebar-content {
+        background: linear-gradient(45deg, #1DA1F2, #ffffff);
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        min-height: 100vh;
+        width: 100%;
+    }
+
+    .search-form .input-group {
+        background: linear-gradient(180deg, var(--twitter-blue), #ffffff);
+        border-radius: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 3rem;
+    }
+
+    .search-form .form-control {
+        background: transparent;
+        border: none;
+        color: #000;
+        padding-left: 0.5rem;
+    }
+
+    .search-form .input-group-text {
+        background: transparent;
+        border: none;
+        padding: 0.75rem;
+    }
+
+    .search-form .form-control:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    .card.trending-card,
+    .card.who-to-follow-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+    }
+
+    .trending-card .card-header {
+        background: linear-gradient(45deg, #1DA1F2, #ffffff);
+        border-bottom: none;
+        border-radius: 10px 10px 0 0;
+        padding: 1rem;
+    }
+
+    .trending-item {
+        background: linear-gradient(45deg, #1DA1F2, #ffffff);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .trending-item:hover {
+        transform: translateY(-2px);
+    }
+
+    .trending-item:last-child {
+        border-bottom: none;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .who-to-follow-card .card-header {
+        background: linear-gradient(45deg, #1DA1F2, #ffffff);
+        border-bottom: none;
+        border-radius: 10px 10px 0 0;
+        padding: 1rem;
+    }
+
+    .follow-item {
+        background: linear-gradient(45deg, #1DA1F2, #ffffff);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .follow-item:hover {
+        transform: translateY(-2px);
+    }
+
+    .follow-item:last-child {
+        border-bottom: none;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .card.trending-card {
+        margin-bottom: 3rem !important;
+    }
+</style>
+
+<div class="right-sidebar-content">
+    <!-- Search Bar -->
+    <form class="search-form" action="{% url 'core:search' %}" method="GET">
+        <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0">
+                <svg viewBox="0 0 24 24" class="search-icon">
+                    <g>
+                        <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
+                        </path>
+                    </g>
+                </svg>
+            </span>
+            <input type="search" class="form-control border-start-0" placeholder="Buscar no Twitter" name="q"
+                hx-get="{% url 'core:search' %}" hx-trigger="keyup changed delay:500ms" hx-target="#search-results"
+                hx-swap="innerHTML">
+        </div>
+    </form>
+    <div id="search-results" class="position-absolute bg-white w-100 shadow-sm rounded-bottom border-top-0"></div>
+
+    <!-- Trending Topics -->
+    <div class="card trending-card mb-5">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Trending Topics</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="trending-item p-3">
+                <small class="text-muted">Trending in Brazil</small>
+                <h6 class="mb-0">#Python</h6>
+                <small class="text-muted">97.5K Tweets</small>
+            </div>
+            <div class="trending-item p-3">
+                <small class="text-muted">Technology · Trending</small>
+                <h6 class="mb-0">#Django</h6>
+                <small class="text-muted">52.8K Tweets</small>
+            </div>
+            <div class="trending-item p-3">
+                <small class="text-muted">Trending in Technology</small>
+                <h6 class="mb-0">#JavaScript</h6>
+                <small class="text-muted">33.2K Tweets</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Who to Follow -->
+    <div class="card who-to-follow-card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Who to follow</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="follow-item d-flex align-items-center p-3">
+                <div class="user-info flex-grow-1">
+                    <h6 class="mb-0">Python Developer</h6>
+                    <small class="text-muted">@pythondev</small>
+                </div>
+                <button class="btn btn-outline-primary btn-sm follow-btn">Follow</button>
+            </div>
+            <div class="follow-item d-flex align-items-center p-3">
+                <div class="user-info flex-grow-1">
+                    <h6 class="mb-0">Django News</h6>
+                    <small class="text-muted">@djangonews</small>
+                </div>
+                <button class="btn btn-outline-primary btn-sm follow-btn">Follow</button>
+            </div>
+            <div class="follow-item d-flex align-items-center p-3">
+                <div class="user-info flex-grow-1">
+                    <h6 class="mb-0">JavaScript Pro</h6>
+                    <small class="text-muted">@jspro</small>
+                </div>
+                <button class="btn btn-outline-primary btn-sm follow-btn">Follow</button>
+            </div>
+            <div class="follow-item d-flex align-items-center p-3">
+                <div class="user-info flex-grow-1">
+                    <h6 class="mb-0">Web Developer</h6>
+                    <small class="text-muted">@webdev</small>
+                </div>
+                <button class="btn btn-outline-primary btn-sm follow-btn">Follow</button>
+            </div>
+        </div>
+    </div>
+</div>

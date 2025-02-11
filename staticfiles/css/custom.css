@@ -14,6 +14,225 @@ body {
     background-color: var(--twitter-bg);
     color: var(--twitter-dark);
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+}
+
+/* Layout principal */
+.container-fluid {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* Sidebars */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding-top: 1rem;
+    overflow-y: auto;
+    background-color: #fff;
+}
+
+.sidebar-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem;
+}
+
+/* Twitter Logo */
+.twitter-logo {
+    padding: 0.5rem;
+}
+
+.twitter-icon {
+    width: 30px;
+    height: 30px;
+    color: var(--twitter-blue);
+}
+
+/* Navigation Icons */
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 1rem;
+}
+
+/* Navigation Links */
+.nav-link {
+    color: var(--twitter-dark);
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: rgba(29, 161, 242, 0.1);
+    color: var(--twitter-blue);
+}
+
+.nav-link svg {
+    fill: currentColor;
+}
+
+/* Tweet Button */
+.tweet-btn {
+    width: 90%;
+    border-radius: 9999px;
+    font-weight: bold;
+    margin: 0.5rem auto;
+    padding: 0.75rem;
+}
+
+/* User Profile Section */
+.user-profile {
+    margin-top: auto;
+    padding: 0.75rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.user-profile:hover {
+    background-color: rgba(29, 161, 242, 0.1);
+}
+
+.user-info .username {
+    font-weight: bold;
+}
+
+.user-info .handle {
+    color: var(--twitter-light);
+    font-size: 0.9rem;
+}
+
+/* Right Sidebar */
+.right-sidebar-content {
+    position: sticky;
+    top: 0;
+    padding: 1rem;
+}
+
+/* Search Bar */
+.search-container {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--twitter-bg);
+    padding: 0.5rem 0;
+}
+
+.search-form .input-group {
+    background-color: #fff;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.search-form .input-group-text {
+    border: none;
+}
+
+.search-form .form-control {
+    border: none;
+    box-shadow: none;
+}
+
+.search-form .form-control:focus {
+    box-shadow: 0 0 0 2px var(--twitter-blue);
+}
+
+.search-icon {
+    width: 20px;
+    height: 20px;
+    fill: var(--twitter-light);
+}
+
+/* Trending Card */
+.trending-card, .who-to-follow-card {
+    border-radius: 16px;
+    background-color: #f7f9fa;
+    border: none;
+}
+
+.trending-card .card-header, .who-to-follow-card .card-header {
+    background-color: transparent;
+    border-bottom: none;
+    padding: 1rem;
+}
+
+.trending-item {
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.trending-item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Follow Button */
+.follow-btn {
+    border-radius: 9999px;
+    font-weight: bold;
+    padding: 0.25rem 1rem;
+}
+
+.follow-item {
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.follow-item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Main Content Area */
+main {
+    border-left: 1px solid var(--twitter-border);
+    border-right: 1px solid var(--twitter-border);
+    min-height: 100vh;
+    background-color: #fff;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        bottom: 0;
+        top: auto;
+        height: auto;
+        width: 100%;
+        z-index: 1000;
+        border-top: 1px solid var(--twitter-border);
+    }
+    
+    .sidebar-content {
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0.5rem;
+    }
+    
+    .nav-link span, .user-profile, .tweet-btn {
+        display: none;
+    }
+    
+    .nav-icon {
+        margin-right: 0;
+    }
+    
+    .right-sidebar-content {
+        display: none;
+    }
+    
+    main {
+        margin-bottom: 4rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Cabeçalho, Navbar e Sidebars */
@@ -54,21 +273,6 @@ a:hover {
 .form-control {
     border: 1px solid var(--twitter-border);
     border-radius: 4px;
-}
-
-/* Layout principal */
-main {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* Ajuste da Sidebar */
-.sidebar {
-    background-color: #fff;
-    border-right: 1px solid var(--twitter-border);
-    padding: 20px;
 }
 
 /* Estilização dos Tweets */

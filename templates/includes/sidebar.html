@@ -1,17 +1,103 @@
+{% load static %}
+
+<style>
+/* Estilização customizada para a sidebar para padronização com a tela de login e custom.css */
+.sidebar-content {
+    background: linear-gradient(45deg, #1DA1F2, #ffffff);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-height: 100vh;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+}
+.twitter-logo {
+    text-align: center;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+.twitter-logo:hover {
+    transform: scale(1.05);
+}
+.nav-link {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--twitter-dark);
+    transition: background-color 0.3s ease;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+}
+.nav-link:hover {
+    background-color: rgba(29, 161, 242, 0.2);
+}
+.nav-link span {
+    margin-left: 0.5rem;
+}
+.user-profile {
+    background-color: rgba(29, 161, 242, 0.1);
+    padding: 0.75rem;
+    border-radius: 30px;
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.user-info {
+    text-align: center;
+}
+.user-info .username {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+.user-info .handle {
+    color: var(--twitter-light);
+    font-size: 0.9rem;
+}
+</style>
+
 <div class="sidebar-content">
-  <h4>Menu</h4>
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:home' %}">Home</a>
-    </li>
-    {% if user.is_authenticated %}
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-    </li>
-    {% else %}
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'login' %}">Login</a>
-    </li>
-    {% endif %}
-  </ul>
+    <div class="twitter-logo mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="twitter-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.29 4.29 0 001.88-2.37 8.59 8.59 0 01-2.72 1.04 4.28 4.28 0 00-7.29 3.9A12.14 12.14 0 013 4.79a4.28 4.28 0 001.32 5.71 4.23 4.23 0 01-1.94-.54v.05a4.28 4.28 0 003.43 4.2 4.3 4.3 0 01-1.93.07 4.28 4.28 0 004 2.97A8.59 8.59 0 012 19.54 12.14 12.14 0 008.29 21c7.55 0 11.68-6.26 11.68-11.68v-.53A8.36 8.36 0 0022.46 6z"/>
+        </svg>
+    </div>
+    
+    <nav class="nav flex-column">
+        <a class="nav-link d-flex align-items-center" href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="nav-icon bi bi-house-door-fill" viewBox="0 0 16 16">
+                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a class="nav-link d-flex align-items-center" href="/messages">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="nav-icon bi bi-envelope-fill" viewBox="0 0 16 16">
+                <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
+            </svg>
+            <span>Messages</span>
+        </a>
+        <a class="nav-link d-flex align-items-center" href="/notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="nav-icon bi bi-bell-fill" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+            </svg>
+            <span>Notifications</span>
+        </a>
+        <a class="nav-link d-flex align-items-center" href="{% url 'account_logout' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="nav-icon bi bi-box-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+            </svg>
+            <span>Logout</span>
+        </a>
+    </nav>
+    
+    <div class="user-profile mt-auto d-flex align-items-center">
+        <div class="user-info">
+            <div class="username">{{ user.username }}</div>
+            <div class="handle">@{{ user.username }}</div>
+        </div>
+    </div>
 </div>
