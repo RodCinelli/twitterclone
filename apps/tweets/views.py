@@ -1,10 +1,23 @@
 from rest_framework import generics
 from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
 import logging
 from .models import Tweet
 from .serializers import TweetSerializer
+from .forms import TweetForm
+from .utils.fake_data import (
+    generate_random_tweet, 
+    generate_tech_news_tweet, 
+    ensure_fake_users_exist,
+    get_fake_user
+)
+import random
+import json
+from django.utils.timesince import timesince
 
 logger = logging.getLogger(__name__)
 
@@ -32,3 +45,67 @@ class TweetCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+def toggle_like(request, tweet_id):
+    if not request.htmx:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+    
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+    user = request.user
+    
+    if tweet.likes.filter(id=user.id).exists():
+        tweet.likes.remove(user)
+        liked = False
+    else:
+        tweet.likes.add(user)
+        liked = True
+    
+    like_count = tweet.likes.count()
+    
+    return JsonResponse({
+        'liked': liked,
+        'likeCount': like_count
+    })
+
+def get_random_tweet():
+    """Retorna um tweet aleatório gerado."""
+    if random.random() < 0.2:  # 20% de chance de ser uma notícia
+        tweet_data = generate_tech_news_tweet()
+    else:
+        tweet_data = generate_random_tweet()
+    
+    return tweet_data
+
+@login_required
+def auto_feed(request):
+    """View para o feed automático com tweets simulados."""
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Garante que os usuários simulados existam
+        ensure_fake_users_exist()
+        
+        # Gera um novo tweet
+        tweet_data = get_random_tweet()
+        
+        # Obtém o usuário simulado do banco de dados
+        fake_user = get_fake_user(tweet_data['user']['username'])
+        
+        # Cria o tweet com o usuário simulado
+        new_tweet = Tweet.objects.create(
+            content=tweet_data['content'],
+            user=fake_user  # Usa o usuário simulado em vez do usuário logado
+        )
+        
+        # Renderiza o tweet no formato correto
+        html = render_to_string(
+            'tweets/partials/tweet.html',
+            {
+                'tweet': new_tweet,
+                'user': request.user,  # Usuário logado para verificar likes
+                'fake_user': tweet_data['user']  # Dados de exibição do usuário simulado
+            },
+            request=request
+        )
+        
+        return HttpResponse(html)
+    
+    return redirect('core:home')

@@ -38,4 +38,102 @@
     {% endfor %}
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configura o HTMX para incluir o token CSRF em todas as requisições
+    htmx.config.defaultHeaders = {
+        'X-CSRFToken': '{{ csrf_token }}'
+    };
+
+    function initializeLikeButton(button) {
+        // Adiciona os comportamentos do botão de like manualmente
+        button.addEventListener('click', function() {
+            this.classList.toggle('liked');
+        });
+
+        button.addEventListener('htmx:afterRequest', function(event) {
+            if (event.detail.xhr.status === 200) {
+                const response = JSON.parse(event.detail.xhr.response);
+                if (response.liked) {
+                    this.classList.add('liked');
+                    this.dispatchEvent(new Event('heartBeat'));
+                    this.querySelector('i').classList.remove('bi-heart');
+                    this.querySelector('i').classList.add('bi-heart-fill');
+                } else {
+                    this.classList.remove('liked');
+                    this.querySelector('i').classList.add('bi-heart');
+                    this.querySelector('i').classList.remove('bi-heart-fill');
+                }
+                
+                // Atualiza o contador de likes
+                const likeCount = this.querySelector('.like-count');
+                if (likeCount) {
+                    likeCount.textContent = response.likeCount;
+                }
+            }
+        });
+
+        button.addEventListener('heartBeat', function() {
+            this.classList.add('beating');
+            setTimeout(() => {
+                this.classList.remove('beating');
+            }, 300);
+        });
+    }
+
+    function addNewTweet() {
+        fetch('{% url "tweets:auto_feed" %}', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const tweetContainer = document.getElementById('tweets');
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            const tweetElement = tempDiv.firstElementChild;
+            
+            // Adiciona o tweet com opacidade 0
+            tweetElement.style.opacity = '0';
+            tweetElement.style.transition = 'opacity 0.5s ease-in';
+            tweetContainer.insertBefore(tweetElement, tweetContainer.firstChild);
+            
+            // Inicializa HTMX
+            htmx.process(tweetElement);
+            
+            // Inicializa o botão de like
+            const likeButton = tweetElement.querySelector('.like-button');
+            if (likeButton) {
+                initializeLikeButton(likeButton);
+            }
+            
+            // Força o reflow
+            tweetElement.offsetHeight;
+            
+            // Faz o fade in
+            tweetElement.style.opacity = '1';
+            
+            // Remove tweets antigos se houver muitos
+            const tweets = tweetContainer.children;
+            if (tweets.length > 20) {
+                tweetContainer.removeChild(tweets[tweets.length - 1]);
+            }
+        });
+    }
+
+    // Inicializa os botões de like existentes
+    document.querySelectorAll('.like-button').forEach(initializeLikeButton);
+
+    // Adiciona novo tweet a cada 15 segundos
+    setInterval(addNewTweet, 15000);
+    
+    // Adiciona primeiro tweet após 5 segundos
+    setTimeout(addNewTweet, 5000);
+});
+</script>
 {% endblock %} 
