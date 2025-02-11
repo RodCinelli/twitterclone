@@ -1,6 +1,8 @@
-setTimeout(function() {
-    var errorAlert = document.querySelector('.alert.alert-danger');
-    if (errorAlert) {
-        errorAlert.style.display = 'none';
-    }
-}, 3000); 
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert.alert-danger, .alert.alert-success');
+        alerts.forEach(function(alert) {
+            alert.style.display = 'none';
+        });
+    }, 3000);
+}); 

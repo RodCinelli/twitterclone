@@ -26,8 +26,7 @@ class CustomPasswordResetView(FormView):
             user.save()
             messages.success(self.request, "Sua senha foi redefinida com sucesso.")
         except User.DoesNotExist:
-            # To avoid exposing whether the email exists
-            messages.success(self.request, "Caso o e-mail esteja cadastrado, sua senha foi redefinida com sucesso.")
+            messages.error(self.request, "O email informado não pode ser localizado.")
         return super().form_valid(form)
 
 def custom_logout_view(request):
