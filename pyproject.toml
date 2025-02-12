@@ -25,7 +25,6 @@ pillow = "^11.1.0"
 django-allauth = "^65.4.1"
 pyjwt = "^2.10.1"
 cryptography = "^44.0.0"
-dj-database-url = "^2.1.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
