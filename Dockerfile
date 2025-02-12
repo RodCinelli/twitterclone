@@ -20,8 +20,8 @@ ENV PYTHONUNBUFFERED=1 \
     PYSETUP_PATH="/opt/pysetup" \
     VENV_PATH="/opt/pysetup/.venv"
 
-# Adicionando Poetry e venv ao PATH
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+# Adicionando Poetry ao PATH
+ENV PATH="$POETRY_HOME/bin:$PATH"
 
 # Instalando dependências do sistema
 RUN apt-get update \
@@ -37,15 +37,16 @@ RUN apt-get update \
     && pip install psycopg2-binary gunicorn requests
 
 # Instalação do Poetry
-RUN curl -sSL https://install.python-poetry.org | python - --version ${POETRY_VERSION}
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python3 - --version ${POETRY_VERSION} \
+    && chmod +x /opt/poetry/bin/poetry
 
 # Copiar e instalar dependências do projeto
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
-# Configurar Poetry para não criar ambiente virtual e não instalar o projeto raiz
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-root
+# Configurar Poetry para não criar ambiente virtual e instalar dependências
+RUN /opt/poetry/bin/poetry config virtualenvs.create false \
+    && /opt/poetry/bin/poetry install --no-root
 
 # Configuração final do workspace
 WORKDIR /app
