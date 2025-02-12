@@ -142,6 +142,56 @@
 .nav-link:nth-child(3) .nav-icon {
     animation: pulse 2s infinite;
 }
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sidebar-content {
+        border-radius: 0;
+        padding: 1rem;
+        position: relative;
+        min-height: auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .twitter-logo {
+        margin: 3rem auto 2rem;  /* Aumenta a margem superior para evitar o botão hambúrguer */
+    }
+
+    .nav-link {
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .nav-link span {
+        font-size: 1rem;
+    }
+
+    .user-profile {
+        margin-top: auto;  /* Empurra o perfil para o final do container */
+        margin-bottom: 1rem;  /* Adiciona espaço na parte inferior */
+        padding: 1rem;
+        width: 100%;  /* Garante que ocupe toda a largura */
+    }
+
+    .user-info {
+        width: 100%;  /* Garante que as informações do usuário ocupem toda a largura */
+    }
+
+    #follow-success {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1070;
+        width: 90%;
+        max-width: 300px;
+        margin: 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+}
 </style>
 
 <div class="sidebar-content">

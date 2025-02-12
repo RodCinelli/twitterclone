@@ -411,12 +411,37 @@ document.addEventListener('DOMContentLoaded', function() {
             const followItem = this.closest('.follow-item');
             const userInfo = followItem ? followItem.querySelector('.user-info h6') : null;
             const username = userInfo ? userInfo.innerText : 'usuário';
-            const successDiv = document.getElementById('follow-success');
+            
+            // Procura a mensagem de sucesso apenas na sidebar desktop
+            const desktopSidebar = document.querySelector('.col-md-3.d-none.d-md-block');
+            const successDiv = desktopSidebar ? desktopSidebar.querySelector('#follow-success') : null;
+            
             if (successDiv) {
                 successDiv.innerText = 'Agora você está seguindo ' + username;
                 successDiv.style.display = 'block';
+                
+                // Adiciona efeito de fade in
+                successDiv.style.opacity = '0';
+                successDiv.style.transform = 'translateY(-10px)';
+                
+                // Força o reflow
+                successDiv.offsetHeight;
+                
+                // Aplica a transição
+                successDiv.style.transition = 'all 0.3s ease';
+                successDiv.style.opacity = '1';
+                successDiv.style.transform = 'translateY(0)';
+                
                 setTimeout(() => {
-                    successDiv.style.display = 'none';
+                    // Fade out suave
+                    successDiv.style.opacity = '0';
+                    successDiv.style.transform = 'translateY(-10px)';
+                    
+                    // Esconde após a transição
+                    setTimeout(() => {
+                        successDiv.style.display = 'none';
+                        successDiv.style.transform = '';
+                    }, 300);
                 }, 3000);
             }
         });
