@@ -404,5 +404,24 @@ document.addEventListener('DOMContentLoaded', function() {
             event.detail.target.querySelectorAll('.like-button').forEach(initializeLikeButton);
         }
     });
+
+    // Inicializa os botões de follow
+    function initializeFollowButton(button) {
+        button.addEventListener('click', function() {
+            const followItem = this.closest('.follow-item');
+            const userInfo = followItem ? followItem.querySelector('.user-info h6') : null;
+            const username = userInfo ? userInfo.innerText : 'usuário';
+            const successDiv = document.getElementById('follow-success');
+            if (successDiv) {
+                successDiv.innerText = 'Agora você está seguindo ' + username;
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    successDiv.style.display = 'none';
+                }, 3000);
+            }
+        });
+    }
+
+    document.querySelectorAll('.follow-btn').forEach(initializeFollowButton);
 });
 </script>
