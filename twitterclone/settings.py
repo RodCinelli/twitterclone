@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import sys
 from pathlib import Path
+import dj_database_url # type: ignore
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -108,26 +109,22 @@ WSGI_APPLICATION = "twitterclone.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.environ.get("SQL_USER", "user"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-        "HOST": os.environ.get("SQL_HOST", "localhost"),
-        "PORT": os.environ.get("SQL_PORT", "5432"),
-    }
+    "default": dj_database_url.config(
+        default=os.environ.get("DATABASE_URL", "postgresql://user:password@localhost:5432/twitterclone"),
+        conn_max_age=600,
+    )
 }
 
 # Se os testes estiverem sendo executados, sobrescreva as configurações do banco.
 if 'test' in sys.argv:
     DATABASES = {
         "default": {
-            "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-            "NAME": os.environ.get("SQL_DATABASE", "twitterclone_test_db"),
-            "USER": os.environ.get("SQL_USER", "twitterclone_test"),
-            "PASSWORD": os.environ.get("SQL_PASSWORD", "twitterclone_test"),
-            "HOST": os.environ.get("SQL_HOST", "db"),
-            "PORT": os.environ.get("SQL_PORT", "5432"),
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "twitterclone_test_db",
+            "USER": "twitterclone_test",
+            "PASSWORD": "twitterclone_test",
+            "HOST": "db",
+            "PORT": "5432",
         }
     }
 
