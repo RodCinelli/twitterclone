@@ -1,14 +1,13 @@
 #!/bin/sh
 
-# Função para verificar se o banco de dados está pronto
 postgres_ready() {
     nc -z $SQL_HOST $SQL_PORT
 }
 
 # Aguarda o PostgreSQL
 until postgres_ready; do
-  echo >&2 "PostgreSQL não está disponível - aguardando..."
-  sleep 1
+    echo >&2 "PostgreSQL não está disponível - aguardando..."
+    sleep 1
 done
 echo >&2 "PostgreSQL está disponível - continuando..."
 
