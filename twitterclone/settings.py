@@ -30,10 +30,10 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = os.environ.get(
     "DJANGO_ALLOWED_HOSTS",
-    "twitterclone-production-0799.up.railway.app localhost 127.0.0.1 [::1]"
+    "twitterclone-production-1f3e.up.railway.app localhost 127.0.0.1 [::1]"
 ).split(" ")
 
-CSRF_TRUSTED_ORIGINS = ["https://twitterclone-production-0799.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = ["https://twitterclone-production-1f3e.up.railway.app"]
 
 # Application definition
 
