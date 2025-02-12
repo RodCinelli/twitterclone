@@ -3,59 +3,144 @@
 <style>
 /* Estilização customizada para a sidebar para padronização com a tela de login e custom.css */
 .sidebar-content {
-    background: linear-gradient(45deg, #1DA1F2, #ffffff);
+    background: linear-gradient(135deg, #1DA1F2 0%, #1a91da 50%, #1577b3 100%);
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding-right: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(29, 161, 242, 0.15);
     min-height: 100vh;
     width: 100%;
     position: sticky;
     top: 0;
     overflow: hidden;
+    transition: all 0.3s ease-in-out;
 }
+
+.sidebar-content:hover {
+    box-shadow: 0 12px 40px rgba(29, 161, 242, 0.25);
+}
+
 .twitter-logo {
     text-align: center;
-    margin-bottom: 1rem;
-    transition: transform 0.3s ease;
+    margin-bottom: 2rem;
+    transform-origin: center;
+    animation: logoFloat 6s ease-in-out infinite;
 }
-.twitter-logo:hover {
-    transform: scale(1.05);
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
+
+.twitter-logo svg {
+    width: 40px;
+    height: 40px;
+    color: #ffffff;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
 .nav-link {
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.25rem;
     margin-bottom: 1rem;
     font-weight: 600;
-    color: var(--twitter-dark);
-    transition: background-color 0.3s ease;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 30px;
     display: flex;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
 }
+
+.nav-link:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
 .nav-link:hover {
-    background-color: rgba(29, 161, 242, 0.2);
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    color: #ffffff;
+    text-decoration: none;
 }
+
+.nav-link:hover:before {
+    transform: translateX(0);
+}
+
+.nav-link svg {
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover svg {
+    transform: scale(1.1);
+}
+
 .nav-link span {
-    margin-left: 0.5rem;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 1;
 }
+
 .user-profile {
-    background-color: rgba(29, 161, 242, 0.1);
-    padding: 0.75rem;
-    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.25rem;
+    border-radius: 20px;
     margin-top: 2rem;
     display: flex;
     align-items: center;
     flex-direction: column;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
 }
+
+.user-profile:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
 .user-info {
     text-align: center;
+    color: #ffffff;
 }
+
 .user-info .username {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: bold;
+    margin-bottom: 0.25rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
 .user-info .handle {
-    color: var(--twitter-light);
-    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Animação para os ícones da navegação */
+.nav-icon {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Efeito de pulso suave para notificações */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.nav-link:nth-child(3) .nav-icon {
+    animation: pulse 2s infinite;
 }
 </style>
 

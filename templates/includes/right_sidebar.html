@@ -2,100 +2,254 @@
 
 <style>
     .right-sidebar-content {
-        background: linear-gradient(45deg, #1DA1F2, #ffffff);
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #1DA1F2 0%, #1a91da 50%, #1577b3 100%);
+        padding: 1.25rem;
+        padding-left: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(29, 161, 242, 0.15);
         min-height: 100vh;
         width: 100%;
+        position: sticky;
+        top: 0;
+        transition: all 0.3s ease-in-out;
+        backdrop-filter: blur(10px);
+        font-size: 0.95rem;
+    }
+
+    .right-sidebar-content:hover {
+        box-shadow: 0 12px 40px rgba(29, 161, 242, 0.25);
     }
 
     .search-form .input-group {
-        background: linear-gradient(180deg, var(--twitter-blue), #ffffff);
+        background: rgba(255, 255, 255, 0.15);
         border-radius: 30px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        margin-bottom: 3rem;
+        margin-bottom: 2.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .search-form .input-group:focus-within {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
     }
 
     .search-form .form-control {
         background: transparent;
         border: none;
-        color: #000;
-        padding-left: 0.5rem;
+        color: #333333;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-form .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+    }
+
+    .search-form .form-control:focus::placeholder {
+        opacity: 0.5;
+        transform: translateX(5px);
     }
 
     .search-form .input-group-text {
         background: transparent;
         border: none;
-        padding: 0.75rem;
+        padding: 0.5rem 1rem;
+        color: rgba(255, 255, 255, 0.9);
     }
 
-    .search-form .form-control:focus {
-        box-shadow: none;
-        outline: none;
+    .search-form .search-icon {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+        transition: transform 0.3s ease;
+    }
+
+    .search-form .input-group:hover .search-icon {
+        transform: scale(1.1);
     }
 
     .card.trending-card,
     .card.who-to-follow-card {
+        background: rgba(255, 255, 255, 0.1);
         border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(29, 161, 242, 0.15);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.5rem;
     }
 
-    .trending-card .card-header {
-        background: linear-gradient(45deg, #1DA1F2, #ffffff);
-        border-bottom: none;
-        border-radius: 10px 10px 0 0;
-        padding: 1rem;
-    }
-
-    .trending-item {
-        background: linear-gradient(45deg, #1DA1F2, #ffffff);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .trending-item:hover {
+    .trending-card:hover,
+    .who-to-follow-card:hover {
         transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(29, 161, 242, 0.25);
     }
 
-    .trending-item:last-child {
-        border-bottom: none;
-        border-radius: 0 0 10px 10px;
-    }
-
+    .trending-card .card-header,
     .who-to-follow-card .card-header {
-        background: linear-gradient(45deg, #1DA1F2, #ffffff);
-        border-bottom: none;
-        border-radius: 10px 10px 0 0;
+        background: rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding: 1rem;
+        color: #ffffff;
     }
 
+    .card-header h5 {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .trending-item,
     .follow-item {
-        background: linear-gradient(45deg, #1DA1F2, #ffffff);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.85rem 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .trending-item:before,
+    .follow-item:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(-100%);
         transition: transform 0.3s ease;
     }
 
+    .trending-item:hover,
     .follow-item:hover {
-        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.05);
+        transform: translateX(5px);
     }
 
-    .follow-item:last-child {
-        border-bottom: none;
-        border-radius: 0 0 10px 10px;
+    .trending-item:hover:before,
+    .follow-item:hover:before {
+        transform: translateX(0);
+    }
+
+    .trending-item small,
+    .follow-item small {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.8rem;
+        display: block;
+        line-height: 1.2;
+    }
+
+    .trending-item h6,
+    .follow-item h6 {
+        color: #ffffff;
+        font-weight: 600;
+        margin: 0.2rem 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 0.9rem;
+        line-height: 1.2;
     }
 
     .stack-icon {
-        width: 24px;
-        height: 24px;
-        margin-right: 10px;
+        width: 28px;
+        height: 28px;
+        margin-right: 12px;
+        transition: transform 0.3s ease;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .follow-item:hover .stack-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .follow-btn {
+        background: transparent;
+        border: 2px solid #ffffff;
+        color: #ffffff;
+        border-radius: 30px;
+        padding: 0.4rem 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        font-size: 0.9rem;
+    }
+
+    .follow-btn:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: -1;
+    }
+
+    .follow-btn:hover {
+        color: #1DA1F2;
+        border-color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .follow-btn:hover:before {
+        transform: translateX(0);
+    }
+
+    .htmx-indicator {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .htmx-request .htmx-indicator {
+        opacity: 1;
+    }
+
+    .spinner-border-sm {
+        width: 0.8rem;
+        height: 0.8rem;
+        border-width: 0.15em;
+        margin-left: 0.4rem;
+    }
+
+    #search-results {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 8px 32px rgba(29, 161, 242, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(29, 161, 242, 0.1);
+        z-index: 1000;
+        transform: translateY(-10px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    #search-results.show {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
 
     .card.trending-card {
-        margin-bottom: 3rem !important;
+        margin-bottom: 2.5rem;
     }
 </style>
 
@@ -128,25 +282,30 @@
     <div id="search-results" class="position-absolute bg-white w-100 shadow-sm rounded-bottom border-top-0"></div>
 
     <!-- Trending Topics -->
-    <div class="card trending-card mb-5">
+    <div class="card trending-card">
         <div class="card-header">
             <h5 class="card-title mb-0">Trending Topics</h5>
         </div>
         <div class="card-body p-0">
-            <div class="trending-item p-3">
+            <div class="trending-item">
                 <small class="text-muted">Trending in Brazil</small>
                 <h6 class="mb-0">#Python</h6>
                 <small class="text-muted">97.5K Tweets</small>
             </div>
-            <div class="trending-item p-3">
+            <div class="trending-item">
                 <small class="text-muted">Technology · Trending</small>
                 <h6 class="mb-0">#Django</h6>
                 <small class="text-muted">52.8K Tweets</small>
             </div>
-            <div class="trending-item p-3">
+            <div class="trending-item">
                 <small class="text-muted">Trending in Technology</small>
                 <h6 class="mb-0">#JavaScript</h6>
                 <small class="text-muted">33.2K Tweets</small>
+            </div>
+            <div class="trending-item">
+                <small class="text-muted">Development · Hot</small>
+                <h6 class="mb-0">#WebDev</h6>
+                <small class="text-muted">28.4K Tweets</small>
             </div>
         </div>
     </div>
