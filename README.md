@@ -41,7 +41,7 @@ Um clone moderno do Twitter desenvolvido com Django, oferecendo uma experiência
 - Trending Topics
 - Notificações visuais para ações do usuário
 
-### Tecnologias Utilizadas
+### 🛠 Tecnologias Utilizadas
 - **Frontend:**
   - **HTML5 & CSS3:** Uso de marcação semântica e estilizações modernas, com animações e transições suaves para uma experiência visual atraente.
   - **JavaScript (ES6+):** Manipulação dinâmica da interface e lógica interativa para melhor experiência de usuário.
