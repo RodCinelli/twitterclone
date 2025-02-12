@@ -1,0 +1,241 @@
+{% load static %}
+
+<style>
+/* Estilização customizada para a sidebar para padronização com a tela de login e custom.css */
+.sidebar-content {
+    background: linear-gradient(135deg, #1DA1F2 0%, #1a91da 50%, #1577b3 100%);
+    padding: 1.5rem;
+    padding-right: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(29, 161, 242, 0.15);
+    min-height: 100vh;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-content:hover {
+    box-shadow: 0 12px 40px rgba(29, 161, 242, 0.25);
+}
+
+.twitter-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+    transform-origin: center;
+    animation: logoFloat 6s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.twitter-logo svg {
+    width: 40px;
+    height: 40px;
+    color: #ffffff;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.nav-link {
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+.nav-link:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.nav-link:hover:before {
+    transform: translateX(0);
+}
+
+.nav-link svg {
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover svg {
+    transform: scale(1.1);
+}
+
+.nav-link span {
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.user-profile {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.25rem;
+    border-radius: 20px;
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.user-info {
+    text-align: center;
+    color: #ffffff;
+}
+
+.user-info .username {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.user-info .handle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Animação para os ícones da navegação */
+.nav-icon {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Efeito de pulso suave para notificações */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.nav-link:nth-child(3) .nav-icon {
+    animation: pulse 2s infinite;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sidebar-content {
+        border-radius: 0;
+        padding: 1rem;
+        position: relative;
+        min-height: auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .twitter-logo {
+        margin: 3rem auto 2rem;  /* Aumenta a margem superior para evitar o botão hambúrguer */
+    }
+
+    .nav-link {
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .nav-link span {
+        font-size: 1rem;
+    }
+
+    .user-profile {
+        margin-top: auto;  /* Empurra o perfil para o final do container */
+        margin-bottom: 1rem;  /* Adiciona espaço na parte inferior */
+        padding: 1rem;
+        width: 100%;  /* Garante que ocupe toda a largura */
+    }
+
+    .user-info {
+        width: 100%;  /* Garante que as informações do usuário ocupem toda a largura */
+    }
+
+    #follow-success {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1070;
+        width: 90%;
+        max-width: 300px;
+        margin: 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+}
+</style>
+
+<div class="sidebar-content">
+    <div class="twitter-logo mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="twitter-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.29 4.29 0 001.88-2.37 8.59 8.59 0 01-2.72 1.04 4.28 4.28 0 00-7.29 3.9A12.14 12.14 0 013 4.79a4.28 4.28 0 001.32 5.71 4.23 4.23 0 01-1.94-.54v.05a4.28 4.28 0 003.43 4.2 4.3 4.3 0 01-1.93.07 4.28 4.28 0 004 2.97A8.59 8.59 0 012 19.54 12.14 12.14 0 008.29 21c7.55 0 11.68-6.26 11.68-11.68v-.53A8.36 8.36 0 0022.46 6z"/>
+        </svg>
+    </div>
+    
+    <nav class="nav flex-column">
+        <a class="nav-link d-flex align-items-center" href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="nav-icon bi bi-house-door-fill" viewBox="0 0 16 16">
+                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a class="nav-link d-flex align-items-center" href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="nav-icon bi bi-envelope-fill" viewBox="0 0 16 16">
+                <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
+            </svg>
+            <span>Messages</span>
+        </a>
+        <a class="nav-link d-flex align-items-center" href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="nav-icon bi bi-bell-fill" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+            </svg>
+            <span>Notifications</span>
+        </a>
+        <a class="nav-link d-flex align-items-center" href="{% url 'account_logout' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="nav-icon bi bi-box-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+            </svg>
+            <span>Logout</span>
+        </a>
+    </nav>
+    
+    <!-- Insert success message container for follow notifications -->
+    <div id="follow-success" style="display:none; margin: 1rem; margin-top: 2rem; padding: 0.5rem; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; text-align: center;"></div>
+
+    <div class="user-profile mt-auto d-flex align-items-center">
+        <div class="user-info">
+            <div class="username">{{ user.username }}</div>
+            <div class="handle">@{{ user.username }}</div>
+        </div>
+    </div>
+</div>

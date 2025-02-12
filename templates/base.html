@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br" x-data="{ openMenu: false }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Twitter Clone{% endblock %}</title>
+    
+    <!-- Bootstrap CDN + Alpine.js + HTMX + Hyperscript -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+    
+    <style>
+        /* Mobile Menu Styles */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            height: 100%;
+            background: #fff;
+            z-index: 1050;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.show {
+            left: 0;
+        }
+
+        .hamburger-btn {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1060;
+            background: #1DA1F2;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: white;
+            box-shadow: 0 2px 10px rgba(29, 161, 242, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger-btn {
+                display: block;
+            }
+
+            .col-md-3 {
+                display: none !important;
+            }
+
+            .col-md-6 {
+                width: 100% !important;
+            }
+
+            main {
+                padding: 1rem !important;
+                margin-top: 3rem !important;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body style="background: linear-gradient(45deg, #1DA1F2, #ffffff);">
+    <!-- Hamburger Button -->
+    <button class="hamburger-btn" @click="openMenu = !openMenu">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" 
+         :class="{ 'show': openMenu }"
+         @click="openMenu = false"></div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" 
+         :class="{ 'show': openMenu }">
+        {% include 'includes/sidebar.html' %}
+    </div>
+
+    <div class="container-fluid g-0">
+        <div class="row g-0">
+            <!-- Sidebar Esquerda (Desktop) -->
+            <div class="col-md-3 col-lg-3 d-none d-md-block">
+                {% include 'includes/sidebar.html' %}
+            </div>
+
+            <!-- Conteúdo Principal -->
+            <div class="col-md-6 col-lg-6">
+                <main style="position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 0 2rem;">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% block content %}{% endblock %}
+                </main>
+            </div>
+
+            <!-- Sidebar Direita (Desktop) -->
+            <div class="col-md-3 col-lg-3 d-none d-md-block">
+                {% include 'includes/right_sidebar.html' %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/alertAutoHide.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

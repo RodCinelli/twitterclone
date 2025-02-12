@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Feed Automático</h5>
+                    <small class="text-muted">Tweets são gerados automaticamente a cada 30 segundos</small>
+                </div>
+                <div id="tweet-container">
+                    {% for tweet in tweets %}
+                    <div class="tweet p-3 border-bottom">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="avatar">{{ tweet.user.username|make_list|first }}</div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">{{ tweet.user.username }}</h6>
+                                <p class="mb-0">{{ tweet.content }}</p>
+                                <small class="text-muted">{{ tweet.created_at|date:"d/m/Y H:i" }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function createTweetElement(tweet) {
+        const tweetDiv = document.createElement('div');
+        tweetDiv.className = 'tweet p-3 border-bottom';
+        tweetDiv.style.opacity = '0';
+        tweetDiv.style.transition = 'opacity 0.5s ease-in';
+        
+        tweetDiv.innerHTML = `
+            <div class="d-flex">
+                <div class="flex-shrink-0">
+                    <div class="avatar">${tweet.avatar}</div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-0">${tweet.name}</h6>
+                    <small class="text-muted">@${tweet.username}</small>
+                    <p class="mb-0">${tweet.content}</p>
+                    <small class="text-muted">${tweet.created_at}</small>
+                </div>
+            </div>
+        `;
+        
+        return tweetDiv;
+    }
+
+    function addNewTweet() {
+        fetch('{% url "auto_feed" %}', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(tweet => {
+            const tweetElement = createTweetElement(tweet);
+            const container = document.getElementById('tweet-container');
+            
+            container.insertBefore(tweetElement, container.firstChild);
+            
+            // Trigger reflow
+            tweetElement.offsetHeight;
+            
+            // Fade in
+            tweetElement.style.opacity = '1';
+            
+            // Remove older tweets if there are too many
+            const tweets = container.getElementsByClassName('tweet');
+            if (tweets.length > 20) {
+                container.removeChild(tweets[tweets.length - 1]);
+            }
+        });
+    }
+
+    // Adiciona novo tweet a cada 30 segundos
+    setInterval(addNewTweet, 30000);
+    
+    // Adiciona primeiro tweet após 5 segundos
+    setTimeout(addNewTweet, 5000);
+});
+</script>
+
+<style>
+.avatar {
+    width: 48px;
+    height: 48px;
+    background-color: var(--twitter-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.tweet {
+    background-color: white;
+    transition: background-color 0.3s ease;
+}
+
+.tweet:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+</style>
+{% endblock %} 

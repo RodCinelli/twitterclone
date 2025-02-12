@@ -1,0 +1,9 @@
+{% for tweet, fake_user in tweets_with_users %}
+    {% include "tweets/partials/tweet.html" with tweet=tweet fake_user=fake_user %}
+{% empty %}
+    <div class="card tweet-card">
+        <div class="card-body text-center text-muted">
+            <p class="mb-0">Nenhum tweet encontrado para esta busca.</p>
+        </div>
+    </div>
+{% endfor %} 

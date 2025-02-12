@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/feed.css' %}">
+<style>
+.tweet-form-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 249, 249, 0.95) 100%);
+    border: none;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(29, 161, 242, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(29, 161, 242, 0.1);
+}
+
+.tweet-form-card:hover {
+    box-shadow: 0 12px 40px rgba(29, 161, 242, 0.15);
+    transform: translateY(-2px);
+}
+
+.tweet-form-card .card-body {
+    padding: 1.5rem;
+}
+
+.tweet-form-card form {
+    position: relative;
+}
+
+.textarea {
+    border: 2px solid rgba(29, 161, 242, 0.1);
+    border-radius: 15px;
+    padding: 1rem;
+    font-size: 1.1rem;
+    resize: none;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.textarea:focus {
+    border-color: #1DA1F2;
+    box-shadow: 0 0 0 4px rgba(29, 161, 242, 0.15);
+    outline: none;
+    background: #ffffff;
+}
+
+.textarea::placeholder {
+    color: #657786;
+    transition: all 0.3s ease;
+}
+
+.textarea:focus::placeholder {
+    opacity: 0.7;
+    transform: translateX(5px);
+}
+
+.btn-primary {
+    background: #1DA1F2;
+    border: none;
+    border-radius: 30px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(29, 161, 242, 0.2);
+    min-width: 100px;
+}
+
+.btn-primary:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+    transform: translateX(-100%) rotate(45deg);
+    transition: transform 0.5s ease;
+}
+
+.btn-primary:hover {
+    background: #1a91da;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 161, 242, 0.3);
+}
+
+.btn-primary:hover:before {
+    transform: translateX(100%) rotate(45deg);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(29, 161, 242, 0.2);
+}
+
+/* Contador de caracteres */
+.character-count {
+    color: #657786;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.4rem 1rem;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 8px rgba(29, 161, 242, 0.1);
+    margin-right: auto;
+    transform: translateY(-3px);
+}
+
+.character-count.warning {
+    color: #ffad1f;
+    background: rgba(255, 173, 31, 0.1);
+}
+
+.character-count.danger {
+    color: #e0245e;
+    background: rgba(224, 36, 94, 0.1);
+}
+
+/* Animação de loading no botão durante o envio */
+.btn-primary.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-primary.loading:after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Estilização dos Cards de Tweet */
+.tweet-card .card-body {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(29, 161, 242, 0.1);
+    box-shadow: 0 4px 15px rgba(29, 161, 242, 0.1);
+    backdrop-filter: blur(10px);
+    margin-bottom: 1rem;
+}
+
+.tweet-card .card-body:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(29, 161, 242, 0.15);
+}
+
+.tweet-card h6 {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+}
+
+.tweet-card .text-muted {
+    color: #657786 !important;
+    font-size: 0.9rem;
+}
+
+.tweet-card p {
+    color: #14171a;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0.8rem 0;
+}
+
+.tweet-actions {
+    margin-top: 1rem;
+}
+
+.tweet-actions .btn {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: 1px solid #1DA1F2;
+    color: #1DA1F2;
+}
+
+.tweet-actions .btn:hover {
+    background: rgba(29, 161, 242, 0.1);
+    transform: translateY(-2px);
+}
+
+.tweet-actions .btn i {
+    font-size: 1rem;
+    margin-right: 0.3rem;
+}
+
+.like-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.like-button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(29, 161, 242, 0.1), rgba(29, 161, 242, 0.2));
+    transform: translateX(-100%) rotate(45deg);
+    transition: transform 0.5s ease;
+}
+
+.like-button:hover:before {
+    transform: translateX(100%) rotate(45deg);
+}
+
+.like-button.liked {
+    background: rgba(224, 36, 94, 0.1);
+    border-color: #E0245E;
+    color: #E0245E;
+}
+
+.like-button.liked i {
+    color: #E0245E;
+}
+
+.like-button.beating {
+    animation: heartBeat 0.3s ease-in-out;
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.tweet-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .tweet-form-card {
+        margin: 1rem 0;
+        border-radius: 15px;
+    }
+
+    .tweet-form-card .card-body {
+        padding: 1rem;
+    }
+
+    .textarea {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+
+    .tweet-form-actions {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .character-count {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.8rem;
+    }
+
+    .btn-primary {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .tweet-card .card-body {
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .tweet-card h6 {
+        font-size: 1rem;
+    }
+
+    .tweet-card p {
+        font-size: 0.95rem;
+    }
+
+    .tweet-actions .btn {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="margin-top: 2rem;">
+  <!-- Formulário de Tweet -->
+  <div class="card tweet-form-card">
+    <div class="card-body">
+      <form hx-post="{% url 'tweets:create_tweet' %}" 
+            hx-swap="afterbegin" 
+            hx-target="#tweets"
+            hx-trigger="submit">
+        {% csrf_token %}
+        <div id="div_id_content" class="mb-3">
+          <textarea name="content" 
+                    cols="40" 
+                    rows="3" 
+                    class="form-control textarea" 
+                    placeholder="O que está acontecendo?" 
+                    maxlength="280" 
+                    required 
+                    id="id_content"></textarea>
+        </div>
+        <div class="tweet-form-actions">
+          <button type="submit" class="btn btn-primary">Tweet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de Tweets -->
+  <div id="tweets">
+    {% for tweet in tweets %}
+      {% include "tweets/partials/tweet.html" %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configura o HTMX para incluir o token CSRF em todas as requisições
+    htmx.config.defaultHeaders = {
+        'X-CSRFToken': '{{ csrf_token }}'
+    };
+
+    // Adiciona contador de caracteres
+    const textarea = document.querySelector('#id_content');
+    const form = textarea.closest('form');
+    const charCount = document.createElement('span');
+    charCount.className = 'character-count';
+    const tweetFormActions = form.querySelector('.tweet-form-actions');
+    tweetFormActions.insertBefore(charCount, tweetFormActions.firstChild);
+
+    function updateCharCount() {
+        const maxLength = 280;
+        const remaining = maxLength - textarea.value.length;
+        charCount.textContent = remaining;
+        
+        if (remaining <= 20) {
+            charCount.className = 'character-count danger';
+        } else if (remaining <= 50) {
+            charCount.className = 'character-count warning';
+        } else {
+            charCount.className = 'character-count';
+        }
+    }
+
+    textarea.addEventListener('input', updateCharCount);
+    updateCharCount(); // Inicializa o contador
+
+    // Adiciona estado de loading no botão durante o envio
+    form.addEventListener('htmx:beforeRequest', function(event) {
+        const button = form.querySelector('button[type="submit"]');
+        button.classList.add('loading');
+    });
+
+    form.addEventListener('htmx:afterRequest', function(event) {
+        const button = form.querySelector('button[type="submit"]');
+        button.classList.remove('loading');
+        textarea.value = ''; // Limpa o textarea após o envio
+        updateCharCount(); // Atualiza o contador
+    });
+
+    function initializeLikeButton(button) {
+        // Adiciona os comportamentos do botão de like manualmente
+        button.addEventListener('click', function() {
+            this.classList.toggle('liked');
+        });
+
+        button.addEventListener('htmx:afterRequest', function(event) {
+            if (event.detail.xhr.status === 200) {
+                const response = JSON.parse(event.detail.xhr.response);
+                if (response.liked) {
+                    this.classList.add('liked');
+                    this.dispatchEvent(new Event('heartBeat'));
+                    this.querySelector('i').classList.remove('bi-heart');
+                    this.querySelector('i').classList.add('bi-heart-fill');
+                } else {
+                    this.classList.remove('liked');
+                    this.querySelector('i').classList.add('bi-heart');
+                    this.querySelector('i').classList.remove('bi-heart-fill');
+                }
+                
+                // Atualiza o contador de likes
+                const likeCount = this.querySelector('.like-count');
+                if (likeCount) {
+                    likeCount.textContent = response.likeCount;
+                }
+            }
+        });
+
+        button.addEventListener('heartBeat', function() {
+            this.classList.add('beating');
+            setTimeout(() => {
+                this.classList.remove('beating');
+            }, 300);
+        });
+    }
+
+    function addNewTweet() {
+        fetch('{% url "tweets:auto_feed" %}', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const tweetContainer = document.getElementById('tweets');
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            const tweetElement = tempDiv.firstElementChild;
+            
+            // Adiciona o tweet com opacidade 0
+            tweetElement.style.opacity = '0';
+            tweetElement.style.transition = 'opacity 0.5s ease-in';
+            tweetContainer.insertBefore(tweetElement, tweetContainer.firstChild);
+            
+            // Inicializa HTMX
+            htmx.process(tweetElement);
+            
+            // Inicializa o botão de like
+            const likeButton = tweetElement.querySelector('.like-button');
+            if (likeButton) {
+                initializeLikeButton(likeButton);
+            }
+            
+            // Força o reflow
+            tweetElement.offsetHeight;
+            
+            // Faz o fade in
+            tweetElement.style.opacity = '1';
+            
+            // Remove tweets antigos se houver muitos
+            const tweets = tweetContainer.children;
+            if (tweets.length > 20) {
+                tweetContainer.removeChild(tweets[tweets.length - 1]);
+            }
+        });
+    }
+
+    // Inicializa os botões de like existentes
+    document.querySelectorAll('.like-button').forEach(initializeLikeButton);
+
+    // Adiciona novo tweet a cada 15 segundos
+    setInterval(addNewTweet, 15000);
+    
+    // Adiciona primeiro tweet após 5 segundos
+    setTimeout(addNewTweet, 5000);
+});
+</script>
+{% endblock %} 

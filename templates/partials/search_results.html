@@ -1,0 +1,47 @@
+{% if not tweets and not users %}
+    <div class="p-3 text-center text-muted">
+        <p>Nenhum resultado encontrado para "{{ query }}"</p>
+    </div>
+{% else %}
+    {% if users %}
+        <div class="search-section">
+            <h6 class="text-muted mb-2">Pessoas</h6>
+            {% for user in users|slice:":3" %}
+                <div class="search-item d-flex align-items-center p-2">
+                    <img src="{{ user.profile.avatar.url|default:'/static/images/default-avatar.png' }}" 
+                         alt="{{ user.username }}" 
+                         class="rounded-circle me-2" 
+                         width="32" height="32">
+                    <div class="user-info">
+                        <div class="fw-bold">{{ user.get_full_name|default:user.username }}</div>
+                        <small class="text-muted">@{{ user.username }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if tweets %}
+        <div class="search-section mt-3">
+            <h6 class="text-muted mb-2">Tweets</h6>
+            {% for tweet in tweets|slice:":3" %}
+                <div class="search-item p-2">
+                    <div class="d-flex">
+                        <img src="{{ tweet.user.profile.avatar.url|default:'/static/images/default-avatar.png' }}" 
+                             alt="{{ tweet.user.username }}" 
+                             class="rounded-circle me-2" 
+                             width="32" height="32">
+                        <div>
+                            <div class="fw-bold">{{ tweet.user.get_full_name|default:tweet.user.username }}</div>
+                            <p class="mb-0">{{ tweet.content|truncatechars:100 }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="p-2 text-center border-top">
+        <a href="{% url 'core:search' %}?q={{ query }}" class="text-decoration-none">Ver todos os resultados</a>
+    </div>
+{% endif %}

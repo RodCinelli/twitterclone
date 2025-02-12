@@ -1,0 +1,31 @@
+{% load static %}
+<div class="card tweet-card">
+    <div class="card-body">
+        <div class="d-flex">
+            <div class="flex-grow-1">
+                <h6 class="mb-0">{% if fake_user %}{{ fake_user.name }}{% else %}{{ tweet.user.username }}{% endif %}</h6>
+                <small class="text-muted">@{% if fake_user %}{{ fake_user.username }}{% else %}{{ tweet.user.username }}{% endif %}</small>
+                {% if fake_user %}
+                <small class="text-muted ms-2">{{ fake_user.avatar }}</small>
+                {% endif %}
+                <p class="mt-2">{{ tweet.content }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">{{ tweet.created_at|timesince }} ago</small>
+                    <div class="tweet-actions">
+                        <button class="btn btn-sm btn-outline-primary me-2 like-button {% if user in tweet.likes.all %}liked{% endif %}"
+                                hx-post="{% url 'tweets:toggle_like' tweet.id %}"
+                                hx-swap="none"
+                                hx-trigger="click"
+                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                            <i class="bi bi-heart{% if user in tweet.likes.all %}-fill{% endif %}"></i>
+                            <span class="like-count">{{ tweet.likes.count }}</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-reply"></i> Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
